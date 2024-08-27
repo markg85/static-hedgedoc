@@ -1,4 +1,4 @@
-# Static HedgeDoc rendered
+# Static HedgeDoc renderer
 [HedgeDoc](https://github.com/hedgedoc/hedgedoc) is a great real-time collaborative markdown editir! However, it misses the option to just render a markdown file with HedgeDoc settings. I had this need because I wanted to build a site page in HedgeDoc and just render the thing without the whole collaborative editing.
 
 This project solves that itch. It renders your markdown mostly the same as HedgeDoc does.
