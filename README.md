@@ -76,3 +76,19 @@ Just something that should turn into a QR!
 ~~~
 This would show a 500x500 QR code that, when scanned, shows `Just something that should turn into a QR!`
 You can change the size to your desire or leave it out which makes it render at 150x150 by default.
+
+### MultiMarkdown (more advanced tables)
+This is mostly fully supported as is written [here](https://fletcher.github.io/MultiMarkdown-6/syntax/tables.html) using [this](https://github.com/redbug312/markdown-it-multimd-table) plugin.
+This example would render as a chessboard.
+```
+|--|--|--|--|--|--|--|--|
+|♜|  |♝|♛|♚|♝|♞|♜|
+|  |♟|♟|♟|  |♟|♟|♟|
+|♟|  |♞|  |  |  |  |  |
+|  |♗|  |  |♟|  |  |  |
+|  |  |  |  |♙|  |  |  |
+|  |  |  |  |  |♘|  |  |
+|♙|♙|♙|♙|  |♙|♙|♙|
+|♖|♘|♗|♕|♔|  |  |♖|
+```
+From that plugin nearly all options are enabled except for `multibody`. It would merge two tables if there is an empty line in between, while fancy, that is a bit too accident prone so that is disabled.
