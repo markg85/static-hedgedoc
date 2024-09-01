@@ -1,0 +1,29 @@
+body {
+    height: 100%
+}
+
+.markdown-body h1[id]:before,
+.markdown-body h2[id]:before,
+.markdown-body h3[id]:before,
+.markdown-body h4[id]:before,
+.markdown-body h5[id]:before,
+.markdown-body h6[id]:before {
+  display: block;
+  content: " ";
+  margin-top: -55px;
+  height: 55px;
+  visibility: hidden;
+}
+
+/* overrides the github style. The padding-right it has slightly misaligns the headers */
+.markdown-body .anchor {
+    float: left;
+    padding-right: 0px;
+    margin-left: -24px;
+    line-height: 1
+}
+
+/* it would be bottom by default, i want top */
+table {
+    caption-side: top;
+}

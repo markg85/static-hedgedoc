@@ -1,0 +1,2 @@
+export const fromCodePoint=String.fromCodePoint||function(astralCodePoint){return String.fromCharCode(Math.floor((astralCodePoint-65536)/1024)+55296,(astralCodePoint-65536)%1024+56320)};export const getCodePoint=typeof String.prototype.codePointAt==="function"?function(input,position){return input.codePointAt(position)}:function(input,position){return(input.charCodeAt(position)-55296)*1024+input.charCodeAt(position+1)-56320+65536};export const highSurrogateFrom=55296;export const highSurrogateTo=56319;
+//# sourceMappingURL=./surrogate-pairs.js.map

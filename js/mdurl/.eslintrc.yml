@@ -1,0 +1,12 @@
+extends: standard
+
+ignorePatterns:
+  - build/
+
+overrides:
+  -
+    files: [ 'index.mjs', 'lib/**/*.mjs' ]
+  -
+    files: [ 'test/**/*.mjs' ]
+    env:
+      mocha: true
