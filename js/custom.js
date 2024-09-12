@@ -199,27 +199,30 @@ const md = markdownIt({
 function renderQr(lang, code) {
     const regex = /^qr=(\d+)x(\d+)/;
     const match = lang.match(regex);
-    let width = 50;
-    let height = 50;
-    
-    if (match) {
-      width = parseInt(match[1], 10) ?? 150;
-      height = parseInt(match[2], 10) ?? 150;
-    }
 
+    let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     const qrCode = generate(code);
-    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    
     toSvg(qrCode, svg, {
         on: 'black',
         off: 'transparent',
         padX: 0,
         padY: 0,
-        width,
-        height,
         scale: 1,
       });
 
-  return svg.outerHTML
+    if (match) {
+      let width = parseInt(match[1], 10) ?? 150;
+      let height = parseInt(match[2], 10) ?? 150;
+      svg.setAttribute('width', width);
+      svg.setAttribute('height', height);
+    } else {
+      // remove width and height attribute from SVG element
+      svg.removeAttribute('width');
+      svg.removeAttribute('height');
+    }
+
+    return svg.outerHTML
 }
 
   function highlightRender (code, lang) {
@@ -352,7 +355,8 @@ fetch('mainpage.md')
   // Convert Markdown to HTML
   const html = md.render(text)
 
-  // Insert HTML into the DOM
-  document.body.innerHTML = html
+  // Add html in the div with id markdown-body
+  document.getElementById('markdown-body').innerHTML = html
+
   postProcess()
 })

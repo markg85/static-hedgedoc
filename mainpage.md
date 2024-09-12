@@ -167,15 +167,18 @@ tags: features, cool, updated
 ### QR
 A QR code can be rendered using:
 ~~~
-```qr=500x500
+```qr
 Just something that should turn into a QR!
 ```
 ~~~
 
 Which renders to:
-```qr=500x500
+```qr
 Just something that should turn into a QR!
 ```
+
+You can also specify a custom width and height (using `qr=500x500` for example). This will screw up your page rendering if it's viewed on a smaller size though.
+Best to let the QR be rendered without sizes specified which makes it auto resizable.
 
 ### [YAML Metadata](./yaml-metadata)
 
