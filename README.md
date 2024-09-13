@@ -23,6 +23,14 @@ The bugs should be fixed at some point but i'd consider them not important enoug
  * A floating TOC (Table Of Ccontent).
  * Dark mode toogle and autodetect, currently - and intentionally - there is just none of it.
 
+Not specific to HedgeDoc but specific to how this static rendering works. Right now everything you put in `mainpage.md` is rendered when opening `index.html`. The index.html should instead look for a - to be written - config file that defines the:
+ - markdown file to load
+ - custom js file to load
+ - custom css file to load
+
+Why would this be handy? Right now when you want to make a custom page using this static renderer you'd overwrite one (or all) of these files which would give you merge conflicts when you resync with this repo.
+With a (intentionally non-existent by default) config file the resyncing would be as simple as a `git pull` without any merge issues.
+
 ## Breaking changes compared to HedgeDoc
 I went to great lengths to make the rendering perfectly compatible. Sadly that isn't possible because I use the latest versions of libraries (HedgeDoc uses very old libraries) which undoubetly give some inconsistencies.
 
