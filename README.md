@@ -14,6 +14,15 @@ Using it is as simple as:
 
 There is a caveat though. I'm using a lot of `mjs` (module js) as extension. Your webserver needs to respond to `mjs` files as javascript content type! Your webserver probably has a default file to present (like index.html gets presented without typing it), you need to add `index.mjs` as default too so that a folder with just an `index.mjs` will have that be served up to the browser when accessing that folder.
 
+## Known bugs and features I still want from HedgeDoc
+If it's a bug it's prefixed with `:bug:` (rendered as :bug:), the rest are features you have in HedgeDock but not in the static renderer yet.
+The bugs should be fixed at some point but i'd consider them not important enough to fix right now.
+
+ * :bug: In mobile view the heading links, the link icon on the left, falls of the screen.
+ * :bug: Some fenced block types that aren't parsable are undefined and thus break completely, handle that more gracefully and render as plain instead.
+ * A floating TOC (Table Of Ccontent).
+ * Dark mode toogle and autodetect, currently - and intentionally - there is just none of it.
+
 ## Breaking changes compared to HedgeDoc
 I went to great lengths to make the rendering perfectly compatible. Sadly that isn't possible because I use the latest versions of libraries (HedgeDoc uses very old libraries) which undoubetly give some inconsistencies.
 
