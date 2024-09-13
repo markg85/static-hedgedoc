@@ -81,12 +81,18 @@ That block would render your CSV data into a table as if you had written a markd
 ### QR
 Ever felt the need to render a QR code straight from HTML? Why not?!
 ~~~
-```qr=500x500
+```qr
 Just something that should turn into a QR!
 ```
 ~~~
-This would show a 500x500 QR code that, when scanned, shows `Just something that should turn into a QR!`
-You can change the size to your desire or leave it out which makes it render at 150x150 by default.
+This would show a auto-scalable QR code that, when scanned, shows `Just something that should turn into a QR!`
+You can change the size to your desire by appending `=<width>x<height>` or as a complete example, the following would render a 150x150 QR code:
+
+~~~
+```qr=150x150
+Just something that should turn into a QR!
+```
+~~~
 
 ### MultiMarkdown (more advanced tables)
 This is mostly fully supported as is written [here](https://fletcher.github.io/MultiMarkdown-6/syntax/tables.html) using [this](https://github.com/redbug312/markdown-it-multimd-table) plugin.
