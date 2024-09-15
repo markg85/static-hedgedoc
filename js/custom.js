@@ -32,13 +32,6 @@ const tocPlugin = new Plugin(
     (match, utils) => '<div class="toc"></div>'
 )
 
-const nowrapPlugin = new Plugin(
-    // regexp to match
-    /^\[NOWRAP\]$/i,
-  
-    (match, utils) => 'FUUU'
-)
-
 const progressBarPlugin = new Plugin(
     // regexp to match
     /\[PRBAR:(\d{1,3})-(\d{1,3})\]/i,
@@ -63,7 +56,6 @@ const md = markdownIt({
   .use(imageSize)
   .use(taskLists)
   .use(tocPlugin)
-  .use(nowrapPlugin)
   .use(progressBarPlugin)
   .use(toc, {listType: 'ul'})
   .use(abbr)
