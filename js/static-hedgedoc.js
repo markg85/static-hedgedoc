@@ -255,6 +255,12 @@ async function loadLanguage(lang) {
     try {
       const module = await import(`./hljs/es/languages/${lang}.min.js`);
       hljs.registerLanguage(lang, module.default);
+
+      // Special case for javascript. We want it to be registerd as js too.
+      if (lang === 'javascript') {
+        hljs.registerLanguage('js', module.default);
+      }
+
       return true;
     } catch (error) {
       // console.error('import failed');
@@ -314,7 +320,7 @@ md.postProcess = async function postProcess() {
 
   for (const lang of pendingLangs) {
     const loadLangRes = await loadLanguage(lang);
-    if (loadLangRes === true) {
+    if (loadLangRes === true || hljs.getLanguage(lang)) {
       const collection = document.getElementsByClassName(`hljs_req_render_${lang}`);
       for (const obj of collection) {
         obj.innerHTML = hljs.highlight(obj.innerHTML, { language: lang, ignoreIllegals: true }).value
