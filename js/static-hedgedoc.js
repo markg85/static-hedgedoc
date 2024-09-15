@@ -303,7 +303,7 @@ md.renderer.rules.container_spoiler_close = function (tokens, idx, options, env,
   return `</details>`;
 };
 
-async function postProcess() {
+md.postProcess = async function postProcess() {
   try {
     const response = await fetch('./js/hljs/es/languages/langs.json')
     langs = await response.json()
@@ -339,16 +339,4 @@ async function postProcess() {
   }
 }
 
-
-// Get content from test.md file using fetch
-fetch('mainpage.md')
-  .then(response => response.text())
-  .then(text => {
-    // Convert Markdown to HTML
-    const html = md.render(text)
-
-    // Add html in the div with id markdown-body
-    document.getElementById('markdown-body').innerHTML = html
-
-    postProcess()
-  })
+window.md = md;
