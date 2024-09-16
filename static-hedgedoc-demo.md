@@ -15,19 +15,6 @@ Or meet us on [**Matrix**](https://chat.hedgedoc.org) for dev-talk and interacti
 
 ## Workspace
 
-### Modes
-
-#### Desktop & Tablet
-
-<i class="fa fa-eye fa-fw"></i> View: See only the result. :wink: :fa-upload: :fa-eye-fw: :fa-columns: :fa-pencil:
-<i class="fa fa-columns fa-fw"></i> Both: See editor and result at the same time.
-<i class="fa fa-pencil fa-fw"></i> Edit: See only the editor.
-
-#### Mobile
-
-<i class="fa fa-eye fa-fw"></i> View: See only the result.
-<i class="fa fa-pencil fa-fw"></i> Edit: See only the editor.
-
 ### Night Mode
 
 When you are tired of a white screen and like a night mode, click on the little moon <i class="fa fa-moon-o"></i> and turn on the night view of HedgeDoc.
