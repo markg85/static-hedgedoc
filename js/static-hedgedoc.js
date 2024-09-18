@@ -23,7 +23,12 @@ mermaid.initialize({ startOnLoad: true });
 import hljs from 'hljs'
 
 let langs = [];
-let pendingLangs = new Set();
+let pendingLangs = [];
+
+const languageAliases = {
+  javascript: ['js'],
+  markdown: ['md']
+};
 
 const tocPlugin = new Plugin(
   // regexp to match
@@ -218,54 +223,64 @@ function renderQr(lang, code) {
 }
 
 function highlightRender(code, lang) {
-  if (!lang || /no(-?)highlight|plain|text/.test(lang)) { return }
-  const [langClean, _] = lang.split('=');
+  if (!lang || /no(-?)highlight|plain|text/.test(lang)) return;
 
-  if (langClean === 'sequence') {
-    return `<div class="sequence-diagram raw">${code}</div>`
-  } else if (langClean === 'flow') {
-    return `<div class="flow-chart raw">${code}</div>`
-  } else if (langClean === 'graphviz') {
-    return `<div class="graphviz raw">${code}</div>`
-  } else if (langClean === 'abc') {
-    return `<div class="abc raw">${code}</div>`
+  const [langClean] = lang.split('=');
+
+  const specialHandlers = {
+    sequence: 'sequence-diagram',
+    flow: 'flow-chart',
+    graphviz: 'graphviz',
+    abc: 'abc'
+  };
+
+  if (specialHandlers[langClean]) {
+    return `<div class="${specialHandlers[langClean]} raw">${code}</div>`;
   }
 
-  const result = {
-    value: code
+  try {
+    return highlightWithFallback(code, langClean);
+  } catch {
+    return md.utils.escapeHtml(code);
   }
-
-  if (langClean && hljs.getLanguage(langClean)) {
-    try {
-      result.value = hljs.highlight(code, { language: langClean, ignoreIllegals: true }).value
-    } catch (__) {
-      result.value = md.utils.escapeHtml(code);
-    }
-  } else {
-    pendingLangs.add(langClean);
-    result.value = md.utils.escapeHtml(code);
-  }
-
-  return result.value;
 }
 
-// Function to see if lang exists in langs. If it does, load the language file in hljs
+function highlightWithFallback(code, langClean) {
+  if (!pendingLangs.includes(langClean)) {
+    const primary = Object.keys(languageAliases).find(primaryLang => languageAliases[primaryLang].includes(langClean));
+    if (primary && !pendingLangs.includes(primary)) {
+      pendingLangs.unshift(primary);
+    }
+    pendingLangs.push(langClean);
+  }
+
+  return hljs.getLanguage(langClean)
+    ? hljs.highlight(code, { language: langClean, ignoreIllegals: true }).value
+    : md.utils.escapeHtml(code);
+}
+
 async function loadLanguage(lang) {
+  if (hljs.getLanguage(lang)) return true;
+
   if (langs.includes(lang)) {
     try {
       const module = await import(`./hljs/es/languages/${lang}.min.js`);
       hljs.registerLanguage(lang, module.default);
 
-      // Special case for javascript. We want it to be registerd as js too.
-      if (lang === 'javascript') {
-        hljs.registerLanguage('js', module.default);
+      const aliases = languageAliases[lang] || [];
+      for (const alias of aliases) {
+        if (!hljs.getLanguage(alias)) {
+          hljs.registerLanguage(alias, module.default);
+        }
       }
 
       return true;
     } catch (error) {
-      // console.error('import failed');
+      console.error('Import failed:', error);
+      return false;
     }
   }
+
   return false;
 }
 
@@ -311,36 +326,35 @@ md.renderer.rules.container_spoiler_close = function (tokens, idx, options, env,
 
 md.postProcess = async function postProcess() {
   try {
-    const response = await fetch('./js/hljs/es/languages/langs.json')
-    langs = await response.json()
+    const response = await fetch('./js/hljs/es/languages/langs.json');
+    langs = await response.json();
   } catch (error) {
-    console.error(error)
+    console.error(error);
     return;
   }
 
   for (const lang of pendingLangs) {
     const loadLangRes = await loadLanguage(lang);
-    if (loadLangRes === true || hljs.getLanguage(lang)) {
+    if (loadLangRes || hljs.getLanguage(lang)) {
       const collection = document.getElementsByClassName(`hljs_req_render_${lang}`);
       for (const obj of collection) {
-        obj.innerHTML = hljs.highlight(obj.innerHTML, { language: lang, ignoreIllegals: true }).value
+        obj.innerHTML = hljs.highlight(obj.innerHTML, { language: lang, ignoreIllegals: true }).value;
       }
 
-      // I don't know why but this has to be outside of the above loop.. If adding it in then some fences don't get properly highlighted.
+      // DO NOT REMOVE THIS LOOP! I don't know why but for whatever reason the highlighing breaks partly if this line is part of the above loop.
       for (const obj of collection) {
         obj.classList.remove(`hljs_req_render_${lang}`);
       }
     } else {
-      console.log(`${lang} skipped, no file for it`)
+      console.log(`${lang} skipped, no file for it`);
     }
   }
 
-  pendingLangs.clear();
+  pendingLangs.length = 0; // Clear the pendingLangs array
 
-  const collection = document.getElementsByClassName(`mermaid`);
-  for (const obj of collection) {
-    const type = mermaid.detectType(obj.innerHTML);
-    const { svg, bindFunctions } = await mermaid.render(type, obj.innerHTML);
+  const mermaidCollection = document.getElementsByClassName('mermaid');
+  for (const obj of mermaidCollection) {
+    const { svg, bindFunctions } = await mermaid.render(mermaid.detectType(obj.innerHTML), obj.innerHTML);
     obj.innerHTML = svg;
   }
 }
