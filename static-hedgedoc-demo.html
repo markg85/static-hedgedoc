@@ -51,8 +51,11 @@
     <script src="js/markdown-it-multimd-table/dist/markdown-it-multimd-table.js"></script>
     <script type="module" src="js/static-hedgedoc.js"></script>
     <script type="module">
+        // Default markdown file
+        const mdfile = new URLSearchParams(window.location.search).get('mdfile') || 'static-hedgedoc-demo.md';
+
         // Get content from test.md file using fetch
-        fetch('static-hedgedoc-demo.md')
+        fetch(mdfile)
             .then(response => response.text())
             .then(text => {
                 // Convert Markdown to HTML
