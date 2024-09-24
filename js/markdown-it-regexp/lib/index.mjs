@@ -86,5 +86,5 @@ Plugin.prototype.parse = function (state, silent) {
 }
 
 Plugin.prototype.render = function (tokens, id, options, env) {
-  return this.replacer(tokens[id].meta.match, stuff, env)
+  return this.replacer(tokens[id].meta.match, stuff, options, env)
 }

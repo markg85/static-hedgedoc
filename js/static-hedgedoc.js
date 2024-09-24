@@ -1,7 +1,6 @@
 import markdownIt from 'markdown-it'
-import { imageSize, taskLists, toc } from 'hedgedoc-markdown-plugins'
+import { imageSize, taskLists, toc as tochedgedoc } from 'hedgedoc-markdown-plugins'
 import { full as emoji } from 'markdown-it-emoji'
-import Plugin from 'markdown-it-regexp'
 import markdownitContainer from 'markdown-it-container'
 import abbr from 'markdown-it-abbr'
 import footnote from 'markdown-it-footnote'
@@ -10,6 +9,7 @@ import sub from 'markdown-it-sub'
 import sup from 'markdown-it-sup'
 import ins from 'markdown-it-ins'
 import deflist from 'markdown-it-deflist'
+import { ProgressBar, TOC } from 'marks-plugins'
 import { generate } from 'lean-qr'
 import { toSvg } from 'lean-qr-svg';
 import anchor from 'markdown-it-anchor'
@@ -30,25 +30,6 @@ const languageAliases = {
   markdown: ['md']
 };
 
-const tocPlugin = new Plugin(
-  // regexp to match
-  /^\[TOC\]$/i,
-
-  (match, utils) => '<div class="toc"></div>'
-)
-
-const progressBarPlugin = new Plugin(
-  // regexp to match
-  /\[PRBAR:(\d{1,3})-(\d{1,3})\]/i,
-
-  (match, utils) => {
-    return `<div class="progress">
-                    <div class="progress-bar" role="progressbar" style="width: ${parseInt(match[1])}%" aria-valuenow="${parseInt(match[1])}" aria-valuemin="0" aria-valuemax="${parseInt(match[2])}">${parseInt(match[1])}%</div>
-                </div>`
-  }
-)
-
-
 const md = markdownIt({
   html: true,
   breaks: true,
@@ -60,9 +41,9 @@ const md = markdownIt({
   .use(emoji)
   .use(imageSize)
   .use(taskLists)
-  .use(tocPlugin)
-  .use(progressBarPlugin)
-  .use(toc, { listType: 'ul' })
+  .use(TOC)
+  .use(ProgressBar)
+  .use(tochedgedoc, { listType: 'ul' })
   .use(abbr)
   .use(footnote)
   .use(marker)
