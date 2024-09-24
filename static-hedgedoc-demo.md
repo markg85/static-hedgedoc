@@ -186,23 +186,43 @@ Use the syntax `[TOC]` to embed a table of contents into your note.
 [TOC]
 
 ### Progressbar
-Some examples of rendering a progresbar.
+This extension adds support for progress bars in Markdown. The width of the progress bar is calculated with two decimal precision and truncated, not rounded. Templates can include decimal precision notation.
+You can find the full spec [here](?mdfile=specs/progress_bar.md).
+
+#### Syntax
+The syntax for the progress bar is:
 ```
-[PRBAR:10-100]
+[progress current [start] [end] ["template"]]
 ```
 
-The first `10` is the progress and the `100` is the total. So this bar renders as a 10% filled progressbar.
-[PRBAR:10-100]
+#### Parameters
+- `current`: Required integer or float representing the current value of the progress bar. This value must be between the start (0 as default) and end (100 as default) values.
+- `start` (optional): Optional integer or float representing the starting value of the progress bar. Defaults to 0 if not provided.
+- `end` (optional): Optional integer or float representing the ending value of the progress bar. Defaults to 100 if not provided.
+- `template`: Optional string that defines the text to be displayed on the progress bar. Placeholders `{1}`, `{2}`, `{3}`, and `{%}` can be used to represent the current value, start value, end value, and the current percentage respectively. Placeholder precision can be specified using a colon followed by the number of decimal places up to 9 max.
 
-Some more examples:
-[PRBAR:25-100]
+#### Progress Bar Examples
 
-[PRBAR:80-100]
+##### Using a Template for Current Value Precision
+This example shows how to use a template to display the current value with two decimal places.
+[progress 75 "Current: {1:.2}"]
+```markdown
+[progress 75 "Current: {1:.2}"]
+```
 
-[PRBAR:100-100]
+##### Using Start and End Values
+This example demonstrates how to use start and end values.
+[progress 30 0 100]
+```markdown
+[progress 30 0 100]
+```
 
-[PRBAR:0-100]
-
+##### High Precision in Progress Bar
+This example shows how the progress bar handles high precision values.
+[progress 32.54876 "Current: {1:.9}"]
+```markdown
+[progress 32.54876 "Current: {1:.9}"]
+```
 
 ### Emoji
 
