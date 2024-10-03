@@ -16,7 +16,7 @@ Using it is as simple as:
 There is a caveat though. I'm using a lot of `mjs` (module js) as extension. Your webserver needs to respond to `mjs` files as javascript content type! Your webserver probably has a default file to present (like index.html gets presented without typing it), you need to add `index.mjs` as default too so that a folder with just an `index.mjs` will have that be served up to the browser when accessing that folder.
 
 ## Known bugs and features I still want from HedgeDoc
-If it's a bug it's prefixed with `:bug:` (rendered as :bug:), the rest are features you have in HedgeDock but not in the static renderer yet.
+If it's a bug it's prefixed with `:bug:` (rendered as :bug:), the rest are features you have in HedgeDoc but not in the static renderer yet.
 The bugs should be fixed at some point but i'd consider them not important enough to fix right now.
 
  * :bug: In mobile view the heading links, the link icon on the left, falls of the screen.
@@ -27,7 +27,7 @@ The bugs should be fixed at some point but i'd consider them not important enoug
 I went to great lengths to make the rendering perfectly compatible. Sadly that isn't possible because I use the latest versions of libraries (HedgeDoc uses very old libraries) which undoubetly give some inconsistencies.
 
 ### Bootstrap, slightly different style
-HedgeDoc uses boorstrap 3, I use 5. The default style in 3 is a little different then it was in 3 so you'll see subtle differences. Here are some more notable ones:
+HedgeDoc uses boorstrap 3, I use 5. The default style in 5 is a little different then it was in 3 so you'll see subtle differences. Here are some more notable ones:
  * The alert blocks look slightly diffeent.
  * Links are slightly different colored and underline.
  * Color wise there's many subtle differences just because of the default bootstrap 5 theme
