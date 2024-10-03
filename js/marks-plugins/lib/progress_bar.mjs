@@ -7,15 +7,36 @@ const parseValue = valueStr =>
 
 const createProgressBarHTML = ({ current, start, end, template }) => {
     const calculatedProgressWidth = ((current - start) / (end - start)) * 100;
-    return `<div class="progress"><div class="progress-bar" role="progressbar" style="width: ${truncate(calculatedProgressWidth)}%;" aria-valuenow="${truncate(current)}" aria-valuemin="${truncate(start)}" aria-valuemax="${truncate(end)}">` +
-        (template ? template.replace(/\{(\d+|%)(?::\.(\d+))?\}/g, match => {
-            const value = match[1] === '%'
-                ? calculatedProgressWidth
-                : parseFloat(match[1] === '1' ? current : match[1] === '2' ? start : end);
-            const precision = match[2] ? parseInt(match[2], 10) : 0;
-            return value.toFixed(precision);
-        }) : '') +
-        `</div></div>`;
+
+    // Replace placeholders
+    let result = template.replace(/\{(\d+|%)(?::\.(\d+))?}/g, (match, index, precision) => {
+        let value;
+        
+        switch (index) {
+            case '1':
+                value = current;
+                break;
+            case '2':
+                value = start;
+                break;
+            case '3':
+                value = end;
+                break;
+            case '%':
+                value = calculatedProgressWidth;
+                break;
+            default:
+                return match; // Return the original placeholder if index is invalid
+        }
+
+        const precisionValue = precision ? parseInt(precision, 10) : 0;
+        return value.toFixed(precisionValue);
+    });
+
+    // Add progress bar HTML
+    result = `<div class="progress"><div class="progress-bar" role="progressbar" style="width: ${truncate(calculatedProgressWidth)}%;" aria-valuenow="${truncate(current)}" aria-valuemin="${truncate(start)}" aria-valuemax="${truncate(end)}">${result}</div></div>`;
+
+    return result;
 };
 
 const pluginInstance = new Plugin(
