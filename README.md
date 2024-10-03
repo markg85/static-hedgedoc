@@ -118,3 +118,20 @@ This example would render as a chessboard.
 |♖|♘|♗|♕|♔|  |  |♖|
 ```
 From that plugin nearly all options are enabled except for `multibody`. It would merge two tables if there is an empty line in between, while fancy, that is a bit too accident prone so that is disabled.
+
+### Progress bars
+It seemed useful to me so i created a [markdown extension spec for progress bars](https://static-hedgedoc.sc2.nl/?mdfile=specs/progress_bar.md) and implemented it for this static parser.
+Typing markdown like:
+```md
+[progress 30 0 100]
+```
+or
+```md
+[progress 30]
+```
+
+Would both show a progress bar that's 30% filled.
+There's quite a bit more to it so read the [spec](https://static-hedgedoc.sc2.nl/?mdfile=specs/progress_bar.md) for more details.
+This is a screenshot example of a couple cases and how that renders.
+
+![image](https://github.com/user-attachments/assets/a05cdf43-b94c-4795-ad33-55e3fbb3bf3b)
