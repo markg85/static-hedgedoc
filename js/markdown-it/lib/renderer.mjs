@@ -300,7 +300,7 @@ Renderer.prototype.renderInlineAsText = function (tokens, options, env) {
  * Takes token stream and generates HTML. Probably, you will never need to call
  * this method directly.
  **/
-Renderer.prototype.render = function (tokens, options, env) {
+Renderer.prototype.render = async function (tokens, options, env) {
   let result = ''
   const rules = this.rules
 
@@ -310,9 +310,9 @@ Renderer.prototype.render = function (tokens, options, env) {
     if (type === 'inline') {
       result += this.renderInline(tokens[i].children, options, env)
     } else if (typeof rules[type] !== 'undefined') {
-      result += rules[type](tokens, i, options, env, this)
+      result += await rules[type](tokens, i, options, env, this)
     } else {
-      result += this.renderToken(tokens, i, options, env)
+      result += await this.renderToken(tokens, i, options, env)
     }
   }
 

@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="css/fontawesome-all.css">
     <link rel="stylesheet" href="js/hljs/styles/github.css">
     <link rel="stylesheet" href="css/github-extract.css">
+    <link rel="stylesheet" href="js/marks-plugins/lib/KaTeX/katex.css">
     <link rel="stylesheet" href="css/markdown.css">
     <link rel="stylesheet" href="css/static-hedgedoc.css">
     <script type="importmap">
@@ -55,18 +56,16 @@
         // Default markdown file
         const mdfile = new URLSearchParams(window.location.search).get('mdfile') || 'static-hedgedoc-demo.md';
 
-        // Get content from test.md file using fetch
-        fetch(mdfile)
-            .then(response => response.text())
-            .then(text => {
-                // Convert Markdown to HTML
-                const html = window.md.render(text)
-
-                // Add html in the div with id markdown-body
-                document.getElementById('markdown-body').innerHTML = html
-
-                window.md.postProcess()
-            })
+        try {
+            await window.md.preProcess();
+            const response = await fetch(mdfile);
+            const text = await response.text();
+            const html = await window.md.render(text);
+            document.getElementById('markdown-body').innerHTML = html;
+            window.md.postProcess();
+        } catch (error) {
+            console.error('An error...:', error);
+        }
     </script>
 </body>
 

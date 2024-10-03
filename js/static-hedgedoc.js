@@ -9,7 +9,7 @@ import sub from 'markdown-it-sub'
 import sup from 'markdown-it-sup'
 import ins from 'markdown-it-ins'
 import deflist from 'markdown-it-deflist'
-import { ProgressBar, TOC } from 'marks-plugins'
+import { ProgressBar, TOC, KaTeX } from 'marks-plugins'
 import { generate } from 'lean-qr'
 import { toSvg } from 'lean-qr-svg';
 import anchor from 'markdown-it-anchor'
@@ -43,6 +43,7 @@ const md = markdownIt({
   .use(taskLists)
   .use(TOC)
   .use(ProgressBar)
+  .use(KaTeX)
   .use(tochedgedoc, { listType: 'ul' })
   .use(abbr)
   .use(footnote)
@@ -66,7 +67,7 @@ const md = markdownIt({
     autolabel: true,
   })
 
-md.renderer.rules.fence = (tokens, idx, options, env, self) => {
+md.renderer.rules.fence = async (tokens, idx, options, env, self) => {
   const token = tokens[idx]
   const info = token.info ? md.utils.unescapeAll(token.info).trim() : ''
   let langName = ''
@@ -91,7 +92,7 @@ md.renderer.rules.fence = (tokens, idx, options, env, self) => {
 
   if (options.highlight && langClean != '') {
     try {
-      highlighted = options.highlight(token.content, langName)
+      highlighted = await options.highlight(token.content, langName)
     } catch (__) {
       highlighted = md.utils.escapeHtml(token.content)
     }
@@ -102,12 +103,6 @@ md.renderer.rules.fence = (tokens, idx, options, env, self) => {
   if (langClean === 'qr') {
     return highlighted;
   }
-
-  // if (highlighted.indexOf('<pre') === 0) {
-  //   return `${highlighted}\n`
-  // }
-
-  const hlclassrequest = `hljs_req_render_${langClean}`
 
   const showlinenumbers = /=$|=\d+$|=\+$/.test(langName)
   if (showlinenumbers) {
@@ -131,9 +126,7 @@ md.renderer.rules.fence = (tokens, idx, options, env, self) => {
     }
 
     const linegutter = `<div class='gutter linenumber${continuelinenumber ? ' continue' : ''}'>${linenumbers.join('\n')}</div>`
-    highlighted = `<div class='wrapper'>${linegutter}<div class='code ${hlclassrequest}'>${highlighted}</div></div>`
-  } else {
-    token.attrJoin('class', hlclassrequest)
+    highlighted = `<div class='wrapper'>${linegutter}<div class='code'>${highlighted}</div></div>`
   }
 
   if (langClean == '') {
@@ -203,7 +196,7 @@ function renderQr(lang, code) {
   return svg.outerHTML
 }
 
-function highlightRender(code, lang) {
+async function highlightRender(code, lang) {
   if (!lang || /no(-?)highlight|plain|text/.test(lang)) return;
 
   const [langClean] = lang.split('=');
@@ -220,20 +213,15 @@ function highlightRender(code, lang) {
   }
 
   try {
-    return highlightWithFallback(code, langClean);
+    return await highlightWithFallback(code, langClean);
   } catch {
     return md.utils.escapeHtml(code);
   }
+
 }
 
-function highlightWithFallback(code, langClean) {
-  if (!pendingLangs.includes(langClean)) {
-    const primary = Object.keys(languageAliases).find(primaryLang => languageAliases[primaryLang].includes(langClean));
-    if (primary && !pendingLangs.includes(primary)) {
-      pendingLangs.unshift(primary);
-    }
-    pendingLangs.push(langClean);
-  }
+async function highlightWithFallback(code, langClean) {
+  await loadLanguage(langClean);
 
   return hljs.getLanguage(langClean)
     ? hljs.highlight(code, { language: langClean, ignoreIllegals: true }).value
@@ -306,37 +294,20 @@ md.renderer.rules.container_spoiler_close = function (tokens, idx, options, env,
 };
 
 md.postProcess = async function postProcess() {
+  const mermaidCollection = document.getElementsByClassName('mermaid');
+  for (const obj of mermaidCollection) {
+    const { svg, bindFunctions } = await mermaid.render(mermaid.detectType(obj.innerHTML), obj.innerHTML);
+    obj.innerHTML = svg;
+  }
+}
+
+md.preProcess = async function preProcess() {
   try {
     const response = await fetch('./js/hljs/es/languages/langs.json');
     langs = await response.json();
   } catch (error) {
     console.error(error);
     return;
-  }
-
-  for (const lang of pendingLangs) {
-    const loadLangRes = await loadLanguage(lang);
-    if (loadLangRes || hljs.getLanguage(lang)) {
-      const collection = document.getElementsByClassName(`hljs_req_render_${lang}`);
-      for (const obj of collection) {
-        obj.innerHTML = hljs.highlight(obj.innerHTML, { language: lang, ignoreIllegals: true }).value;
-      }
-
-      // DO NOT REMOVE THIS LOOP! I don't know why but for whatever reason the highlighing breaks partly if this line is part of the above loop.
-      for (const obj of collection) {
-        obj.classList.remove(`hljs_req_render_${lang}`);
-      }
-    } else {
-      console.log(`${lang} skipped, no file for it`);
-    }
-  }
-
-  pendingLangs.length = 0; // Clear the pendingLangs array
-
-  const mermaidCollection = document.getElementsByClassName('mermaid');
-  for (const obj of mermaidCollection) {
-    const { svg, bindFunctions } = await mermaid.render(mermaid.detectType(obj.innerHTML), obj.innerHTML);
-    obj.innerHTML = svg;
   }
 }
 
