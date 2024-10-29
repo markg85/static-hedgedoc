@@ -197,7 +197,7 @@ function renderQr(lang, code) {
 }
 
 async function highlightRender(code, lang) {
-  if (!lang || /no(-?)highlight|plain|text/.test(lang)) return;
+  if (!lang || /no(-?)highlight|plain|text/.test(lang)) return md.utils.escapeHtml(code);
 
   const [langClean] = lang.split('=');
 
