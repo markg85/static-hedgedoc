@@ -36,11 +36,11 @@ If you want to share a **read-only** note, simply press the publish button <i cl
 
 ### Save a Note
 
-Currently, you can save to **Dropbox** <i class="fa fa-dropbox"></i> (depending on the instance's configuration) or save a Markdown <i class="fa fa-file-text"></i>, HTML or raw HTML <i class="fa fa-file-code-o"></i> file locally.
+Currently, you can save to **Dropbox** <i class="fa-brands fa-dropbox"></i> (depending on the instance's configuration) or save a Markdown <i class="fa fa-file-text"></i>, HTML or raw HTML <i class="fa fa-file-code-o"></i> file locally.
 
 ### Import Notes
 
-Similarly to the *save* feature, you can also import a Markdown file from **Dropbox** <i class="fa fa-dropbox"></i> (depending on the instance's configuration), or import content from your **clipboard** <i class="fa fa-clipboard"></i>, which can parse some HTML. :smiley:
+Similarly to the *save* feature, you can also import a Markdown file from **Dropbox** <i class="fa-brands fa-dropbox"></i> (depending on the instance's configuration), or import content from your **clipboard** <i class="fa fa-clipboard"></i>, which can parse some HTML. :smiley:
 
 ### Permissions
 
